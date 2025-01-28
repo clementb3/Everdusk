@@ -4,18 +4,6 @@
 public class ThirdPersonOrbitCamBasic : MonoBehaviour 
 {
 	public Transform player;                                           // Player's reference.
-	public Vector3 pivotOffset = new Vector3(0.0f, 1.7f,  0.0f);       // Offset to repoint the camera.
-	public Vector3 camOffset   = new Vector3(0.0f, 0.0f, -3.0f);       // Offset to relocate the camera related to the player position.
-	public float smooth = 10f;                                         // Speed of camera responsiveness.
-	public float horizontalAimingSpeed = 6f;                           // Horizontal turn speed.
-	public float verticalAimingSpeed = 6f;                             // Vertical turn speed.
-	public float maxVerticalAngle = 30f;                               // Camera max clamp angle. 
-	public float minVerticalAngle = -60f;                              // Camera min clamp angle.
-	public string XAxis = "Analog X";                                  // The default horizontal axis input name.
-	public string YAxis = "Analog Y";                                  // The default vertical axis input name.
-
-	private float angleH = 0;                                          // Float to store camera horizontal angle related to mouse movement.
-	private float angleV = 0;                                          // Float to store camera vertical angle related to mouse movement.
 	private Transform cam;                                             // This transform.
 	private Vector3 smoothPivotOffset;                                 // Camera current pivot offset on interpolation.
 	private Vector3 smoothCamOffset;                                   // Camera current offset on interpolation.
@@ -27,7 +15,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	private bool isCustomOffset;                                       // Boolean to determine whether or not a custom camera offset is being used.
 
 	// Get the camera horizontal angle.
-	public float GetH { get { return angleH; } }
+	public float GetH { get { return GlobalSettings.angleH; } }
 
 	void Awake()
 	{
@@ -35,21 +23,21 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 		cam = transform;
 
 		// Set camera default position.
-		cam.position = player.position + Quaternion.identity * pivotOffset + Quaternion.identity * camOffset;
+		cam.position = player.position + Quaternion.identity * GlobalSettings.pivotOffset + Quaternion.identity * GlobalSettings.camOffset;
 		cam.rotation = Quaternion.identity;
 
 		// Set up references and default values.
-		smoothPivotOffset = pivotOffset;
-		smoothCamOffset = camOffset;
+		smoothPivotOffset = GlobalSettings.pivotOffset;
+		smoothCamOffset = GlobalSettings.camOffset;
 		defaultFOV = cam.GetComponent<Camera>().fieldOfView;
-		angleH = player.eulerAngles.y;
+		GlobalSettings.angleH = player.eulerAngles.y;
 
 		ResetTargetOffsets ();
 		ResetFOV ();
 		ResetMaxVerticalAngle();
 
 		// Check for no vertical offset.
-		if (camOffset.y > 0)
+		if (GlobalSettings.camOffset.y > 0)
 			Debug.LogWarning("Vertical Cam Offset (Y) will be ignored during collisions!\n" +
 				"It is recommended to set all vertical offset in Pivot Offset.");
 	}
@@ -58,18 +46,18 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	{
 		// Get mouse movement to orbit the camera.
 		// Mouse:
-		angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
-		angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed;
+		GlobalSettings.angleH += Mathf.Clamp(InputManager.GetMouseX(), -1, 1) * GlobalSettings.horizontalAimingSpeed;
+		GlobalSettings.angleV += Mathf.Clamp(InputManager.GetMouseY(), -1, 1) * GlobalSettings.verticalAimingSpeed;
 		// Joystick:
-		angleH += Mathf.Clamp(Input.GetAxis(XAxis), -1, 1) * 60 * horizontalAimingSpeed * Time.deltaTime;
-		angleV += Mathf.Clamp(Input.GetAxis(YAxis), -1, 1) * 60 * verticalAimingSpeed * Time.deltaTime;
+		GlobalSettings.angleH += Mathf.Clamp(InputManager.GetAnalogX(), -1, 1) * 60 * GlobalSettings.horizontalAimingSpeed * Time.deltaTime;
+		GlobalSettings.angleV += Mathf.Clamp(InputManager.GetAnalogY(), -1, 1) * 60 * GlobalSettings.verticalAimingSpeed * Time.deltaTime;
 
 		// Set vertical movement limit.
-		angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);
+		GlobalSettings.angleV = Mathf.Clamp(GlobalSettings.angleV, GlobalSettings.minVerticalAngle, targetMaxVerticalAngle);
 
 		// Set camera orientation.
-		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
-		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
+		Quaternion camYRotation = Quaternion.Euler(0, GlobalSettings.angleH, 0);
+		Quaternion aimRotation = Quaternion.Euler(-GlobalSettings.angleV, GlobalSettings.angleH, 0);
 		cam.rotation = aimRotation;
 
 		// Set FOV.
@@ -91,8 +79,8 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 		bool customOffsetCollision = isCustomOffset && noCollisionOffset.sqrMagnitude < targetCamOffset.sqrMagnitude;
 
 		// Repostition the camera.
-		smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, customOffsetCollision ? pivotOffset : targetPivotOffset, smooth * Time.deltaTime);
-		smoothCamOffset = Vector3.Lerp(smoothCamOffset, customOffsetCollision ? Vector3.zero : noCollisionOffset, smooth * Time.deltaTime);
+		smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, customOffsetCollision ? GlobalSettings.pivotOffset : targetPivotOffset, GlobalSettings.smooth * Time.deltaTime);
+		smoothCamOffset = Vector3.Lerp(smoothCamOffset, customOffsetCollision ? Vector3.zero : noCollisionOffset, GlobalSettings.smooth * Time.deltaTime);
 
 		cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
 	}
@@ -108,15 +96,15 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	// Reset camera offsets to default values.
 	public void ResetTargetOffsets()
 	{
-		targetPivotOffset = pivotOffset;
-		targetCamOffset = camOffset;
+		targetPivotOffset = GlobalSettings.pivotOffset;
+		targetCamOffset = GlobalSettings.camOffset;
 		isCustomOffset = false;
 	}
 
 	// Reset the camera vertical offset.
 	public void ResetYCamOffset()
 	{
-		targetCamOffset.y = camOffset.y;
+		targetCamOffset.y = GlobalSettings.camOffset.y;
 	}
 
 	// Set camera vertical offset.
@@ -152,7 +140,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	// Reset max vertical camera rotation angle to default value.
 	public void ResetMaxVerticalAngle()
 	{
-		this.targetMaxVerticalAngle = maxVerticalAngle;
+		this.targetMaxVerticalAngle = GlobalSettings.maxVerticalAngle;
 	}
 
 	// Double check for collisions: concave objects doesn't detect hit from outside, so cast in both directions.
@@ -165,7 +153,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	bool ViewingPosCheck (Vector3 checkPos)
 	{
 		// Cast target and direction.
-		Vector3 target = player.position + pivotOffset;
+		Vector3 target = player.position + GlobalSettings.pivotOffset;
 		Vector3 direction = target - checkPos;
 		// If a raycast from the check position to the player hits something...
 		if (Physics.SphereCast(checkPos, 0.2f, direction, out RaycastHit hit, direction.magnitude))
@@ -185,7 +173,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	bool ReverseViewingPosCheck(Vector3 checkPos)
 	{
 		// Cast origin and direction.
-		Vector3 origin = player.position + pivotOffset;
+		Vector3 origin = player.position + GlobalSettings.pivotOffset;
 		Vector3 direction = checkPos - origin;
 		if (Physics.SphereCast(origin, 0.2f, direction, out RaycastHit hit, direction.magnitude))
 		{

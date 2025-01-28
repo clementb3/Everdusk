@@ -5,9 +5,6 @@ using System.Collections.Generic;
 public class BasicBehaviour : MonoBehaviour
 {
 	public Transform playerCamera;                        // Reference to the camera that focus the player.
-	public float turnSmoothing = 0.06f;                   // Speed of turn when moving to match camera facing.
-	public string sprintButton = "Sprint";                // Default sprint button (left shift referenced in ProjectSettings/InputManager.asset).
-
 	private float h;                                      // Horizontal Axis.
 	private float v;                                      // Vertical Axis.
 	private int currentBehaviour;                         // Reference to the current player behaviour.
@@ -17,13 +14,11 @@ public class BasicBehaviour : MonoBehaviour
 	private Animator anim;                                // Reference to the Animator component.
 	private ThirdPersonOrbitCamBasic camScript;           // Reference to the third person camera script.
 	private bool sprint;                                  // Boolean to determine whether or not the player activated the sprint mode.
-	private int hFloat;                                   // Animator variable related to Horizontal Axis.
-	private int vFloat;                                   // Animator variable related to Vertical Axis.
 	private List<GenericBehaviour> behaviours;            // The list containing all the enabled player behaviours.
 	private List<GenericBehaviour> overridingBehaviours;  // List of current overriding behaviours.
 	private Rigidbody rBody;                              // Reference to the player's rigidbody.
-	private int groundedBool;                             // Animator variable related to whether or not the player is on the ground.
-	private Vector3 colExtents;                           // Collider extents for ground test. 
+    private Vector3 colExtents;                           // Collider extents for ground test. 
+	private AnimationManager animationManager;            // Management of the different animations.
 
 	// Get current horizontal and vertical axes.
 	public float GetH { get { return h; } }
@@ -44,34 +39,36 @@ public class BasicBehaviour : MonoBehaviour
 	void Awake ()
 	{
 		// Set up the references.
+		// References to the actions of the player
 		behaviours = new List<GenericBehaviour> ();
 		overridingBehaviours = new List<GenericBehaviour>();
+		// References to the Animator
 		anim = GetComponent<Animator> ();
-		hFloat = Animator.StringToHash("H");
-		vFloat = Animator.StringToHash("V");
+		animationManager = new AnimationManager(anim);
+		// References to the camera
 		camScript = playerCamera.GetComponent<ThirdPersonOrbitCamBasic> ();
+		// References to the player body
 		rBody = GetComponent<Rigidbody> ();
 
 		// Grounded verification variables.
-		groundedBool = Animator.StringToHash("Grounded");
 		colExtents = GetComponent<Collider>().bounds.extents;
 	}
 
 	void Update()
 	{
 		// Store the input axes.
-		h = Input.GetAxis("Horizontal");
-		v = Input.GetAxis("Vertical");
+		h = InputManager.GetHorizontalAxis();
+		v = InputManager.GetVerticalAxis();                  
 
 		// Set the input axes on the Animator Controller.
-		anim.SetFloat(hFloat, h, 0.1f, Time.deltaTime);
-		anim.SetFloat(vFloat, v, 0.1f, Time.deltaTime);
+		animationManager.SetHorizontal(h);
+		animationManager.SetVertical(v);
 
 		// Toggle sprint by input.
-		sprint = Input.GetButton (sprintButton);
+		sprint = InputManager.IsSprinting();
 
         // Set the grounded test on the Animator Controller.
-        anim.SetBool(groundedBool, IsGrounded());
+        animationManager.SetGrounded(IsGrounded());
 	}
 
 	// Call the FixedUpdate functions of the active or overriding behaviours.
@@ -214,17 +211,17 @@ public class BasicBehaviour : MonoBehaviour
 	// Check if the active behaviour is the passed one.
 	public bool IsCurrentBehaviour(int behaviourCode)
 	{
-		return this.currentBehaviour == behaviourCode;
+		return currentBehaviour == behaviourCode;
 	}
 
 	// Check if any other behaviour is temporary locked.
 	public bool GetTempLockStatus(int behaviourCodeIgnoreSelf = 0)
 	{
-		return (behaviourLocked != 0 && behaviourLocked != behaviourCodeIgnoreSelf);
+		return behaviourLocked != 0 && behaviourLocked != behaviourCodeIgnoreSelf;
 	}
 
 	// Atempt to lock on a specific behaviour.
-	//  No other behaviour can overrhide during the temporary lock.
+	// No other behaviour can overrhide during the temporary lock.
 	// Use for temporary transitions like jumping, entering/exiting aiming mode, etc.
 	public void LockTempBehaviour(int behaviourCode)
 	{
@@ -299,7 +296,7 @@ public class BasicBehaviour : MonoBehaviour
 		{
 			lastDirection.y = 0;
 			Quaternion targetRotation = Quaternion.LookRotation (lastDirection);
-			Quaternion newRotation = Quaternion.Slerp(rBody.rotation, targetRotation, turnSmoothing);
+			Quaternion newRotation = Quaternion.Slerp(rBody.rotation, targetRotation, GlobalSettings.turnSmoothing);
 			rBody.MoveRotation (newRotation);
 		}
 	}
@@ -307,7 +304,7 @@ public class BasicBehaviour : MonoBehaviour
 	// Function to tell whether or not the player is on ground.
 	public bool IsGrounded()
 	{
-		Ray ray = new Ray(this.transform.position + Vector3.up * 2 * colExtents.x, Vector3.down);
+		Ray ray = new(transform.position + Vector3.up * 2 * colExtents.x, Vector3.down);
 		return Physics.SphereCast(ray, colExtents.x, colExtents.x + 0.2f);
 	}
 }

@@ -16,7 +16,7 @@ public abstract class GenericBehaviour : MonoBehaviour
 		canSprint = true;
 
 		// Set the behaviour code based on the inheriting class.
-		behaviourCode = this.GetType().GetHashCode();
+		behaviourCode = GetType().GetHashCode();
 	}
 
 	// The active behaviour will control the player actions with these functions:

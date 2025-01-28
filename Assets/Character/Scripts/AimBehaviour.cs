@@ -4,31 +4,26 @@ using System.Collections;
 // AimBehaviour inherits from GenericBehaviour. This class corresponds to aim and strafe behaviour.
 public class AimBehaviour : GenericBehaviour
 {
-	public string aimButton = "Aim", shoulderButton = "Aim Shoulder";     // Default aim (right mouse button) and switch shoulders buttons (middle mouse button referenced in ProjectSettings/InputManager.asset)..
-	public Texture2D crosshair;                                           // Crosshair texture.
-	public float aimTurnSmoothing = 0.15f;                                // Speed of turn response when aiming to match camera facing.
-	public Vector3 aimPivotOffset = new Vector3(0.5f, 1.2f,  0f);         // Offset to repoint the camera when aiming.
-	public Vector3 aimCamOffset   = new Vector3(0f, 0.4f, -0.7f);         // Offset to relocate the camera when aiming.
+	public Texture2D crosshair;                            // Crosshair texture.
+	private bool aim;                                      // Boolean to determine whether or not the player is aiming.
+    private AnimationManager animationManager;             // Management of the different animations.
 
-	private int aimBool;                                                  // Animator variable related to aiming.
-	private bool aim;                                                     // Boolean to determine whether or not the player is aiming.
-
-	// Start is always called after any Awake functions.
-	void Start ()
+    // Start is always called after any Awake functions.
+    void Start ()
 	{
 		// Set up the references.
-		aimBool = Animator.StringToHash("Aim");
+		animationManager = new AnimationManager(behaviourManager.GetAnim);
 	}
 
 	// Update is used to set features regardless the active behaviour.
 	void Update ()
 	{
 		// Activate/deactivate aim by input.
-		if (Input.GetAxisRaw(aimButton) != 0 && !aim)
+		if (InputManager.IsAiming() && !aim)
 		{
 			StartCoroutine(ToggleAimOn());
 		}
-		else if (aim && Input.GetAxisRaw(aimButton) == 0)
+		else if (aim && !InputManager.IsAiming())
 		{
 			StartCoroutine(ToggleAimOff());
 		}
@@ -37,37 +32,36 @@ public class AimBehaviour : GenericBehaviour
 		canSprint = !aim;
 
 		// Toggle camera aim position left or right, switching shoulders.
-		if (aim && Input.GetButtonDown (shoulderButton))
+		if (aim && InputManager.SwitchShoulder())
 		{
-			aimCamOffset.x = aimCamOffset.x * (-1);
-			aimPivotOffset.x = aimPivotOffset.x * (-1);
+			GlobalSettings.aimCamOffset.x *= -1;
+			GlobalSettings.aimPivotOffset.x *= -1;
 		}
 
 		// Set aim boolean on the Animator Controller.
-		behaviourManager.GetAnim.SetBool (aimBool, aim);
+		animationManager.SetAim(aim);
 	}
 
 	// Co-rountine to start aiming mode with delay.
 	private IEnumerator ToggleAimOn()
 	{
 		yield return new WaitForSeconds(0.05f);
-		// Aiming is not possible.
-		if (behaviourManager.GetTempLockStatus(this.behaviourCode) || behaviourManager.IsOverriding(this))
-			yield return false;
-
-		// Start aiming.
-		else
-		{
-			aim = true;
-			int signal = 1;
-			aimCamOffset.x = Mathf.Abs(aimCamOffset.x) * signal;
-			aimPivotOffset.x = Mathf.Abs(aimPivotOffset.x) * signal;
-			yield return new WaitForSeconds(0.1f);
-			behaviourManager.GetAnim.SetFloat(speedFloat, 0);
-			// This state overrides the active one.
-			behaviourManager.OverrideWithBehaviour(this);
-		}
-	}
+        // Aiming is not possible.
+        if (behaviourManager.GetTempLockStatus(behaviourCode) || behaviourManager.IsOverriding(this))
+            yield return false;
+        // Start aiming.
+        else
+        {
+            aim = true;
+            int signal = 1;
+            GlobalSettings.aimCamOffset.x = Mathf.Abs(GlobalSettings.aimCamOffset.x) * signal;
+            GlobalSettings.aimPivotOffset.x = Mathf.Abs(GlobalSettings.aimPivotOffset.x) * signal;
+            yield return new WaitForSeconds(0.1f);
+            animationManager.SetSpeed(0);
+            // This state overrides the active one.
+            behaviourManager.OverrideWithBehaviour(this);
+        }
+    }
 
 	// Co-rountine to end aiming mode with delay.
 	private IEnumerator ToggleAimOff()
@@ -85,17 +79,17 @@ public class AimBehaviour : GenericBehaviour
 	{
 		// Set camera position and orientation to the aim mode parameters.
 		if(aim)
-			behaviourManager.GetCamScript.SetTargetOffsets (aimPivotOffset, aimCamOffset);
+			behaviourManager.GetCamScript.SetTargetOffsets (GlobalSettings.aimPivotOffset, GlobalSettings.aimCamOffset);
 	}
 
 	// LocalLateUpdate: manager is called here to set player rotation after camera rotates, avoiding flickering.
 	public override void LocalLateUpdate()
 	{
-		AimManagement();
+		Aim();
 	}
 
 	// Handle aim parameters when aiming is active.
-	void AimManagement()
+	void Aim()
 	{
 		// Deal with the player orientation when aiming.
 		Rotating();
@@ -112,7 +106,7 @@ public class AimBehaviour : GenericBehaviour
 		// Always rotates the player according to the camera horizontal rotation in aim mode.
 		Quaternion targetRotation =  Quaternion.Euler(0, behaviourManager.GetCamScript.GetH, 0);
 
-		float minSpeed = Quaternion.Angle(transform.rotation, targetRotation) * aimTurnSmoothing;
+		float minSpeed = Quaternion.Angle(transform.rotation, targetRotation) * GlobalSettings.aimTurnSmoothing;
 
 		// Rotate entire player to face camera.
 		behaviourManager.SetLastDirection(forward);
@@ -125,7 +119,7 @@ public class AimBehaviour : GenericBehaviour
 	{
 		if (crosshair)
 		{
-			float mag = behaviourManager.GetCamScript.GetCurrentPivotMagnitude(aimPivotOffset);
+			float mag = behaviourManager.GetCamScript.GetCurrentPivotMagnitude(GlobalSettings.aimPivotOffset);
 			if (mag < 0.05f)
 				GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f),
 										 Screen.height / 2 - (crosshair.height * 0.5f),
