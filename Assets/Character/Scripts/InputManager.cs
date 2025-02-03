@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 // Class to manage every input.
@@ -15,7 +14,7 @@ public static class InputManager
     public const string MouseYAxis = "Mouse Y";                  // Default vertical axis mouse input name (referenced in ProjectSettings/InputManager.asset).
     public const string AnalogXAxis = "Analog X";                // Default horizontal axis joystick input name (referenced in ProjectSettings/InputManager.asset).
     public const string AnalogYAxis = "Analog Y";                // Default vertical axis joystick input name (referenced in ProjectSettings/InputManager.asset).
-    public const string MouseScrollWheel = "Mouse ScrollWheel";  // Default mouse scrollwheel name (referenced in ProjectSettings/InputManager.asset).
+    public const string MouseScrollWheel = "Mouse ScrollWheel";  // Default mouse scrollwheel name (used to adapt move speed referenced in ProjectSettings/InputManager.asset).
 
 
     // Boolean functions to know if a button is pressed or not.
