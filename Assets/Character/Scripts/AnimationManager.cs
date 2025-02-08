@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 
@@ -69,5 +70,17 @@ public class AnimationManager
     public void SetVertical(float vertical)
     {
         animator.SetFloat(v, vertical, 0.1f, Time.deltaTime);
+    }
+
+    // Attack animation 
+    public void Attack ()
+    {
+        animator.SetTrigger("Attack");
+    }
+
+    // Pickup animation
+    internal void Pickup()
+    {
+        animator.SetTrigger("Pickup");
     }
 }

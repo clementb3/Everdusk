@@ -241,7 +241,6 @@ public class BasicBehaviour : MonoBehaviour
 	}
 
 	// Common functions to any behaviour:
-
 	// Check if player is sprinting.
 	public virtual bool IsSprinting()
 	{

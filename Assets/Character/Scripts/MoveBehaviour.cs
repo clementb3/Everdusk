@@ -6,8 +6,8 @@ public class MoveBehaviour : GenericBehaviour
 	private float speed, speedSeeker;               // Moving speed.
     private bool jump;                              // Boolean to determine whether or not the player started a jump.
 	private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
+	private bool canMove = true;                    // Boolean to determine if the player can move or is doing an animation.
 	private AnimationManager animationManager;
-	// Start is always called after any Awake functions.
 	void Start()
 	{
 		// Set up the references.
@@ -89,6 +89,10 @@ public class MoveBehaviour : GenericBehaviour
 	// Deal with the basic player movement
 	void Movement(float horizontal, float vertical)
 	{
+		// Disable movemet if the player cannot move (e.g. playing a special animation)
+		if(!canMove)
+			return;
+
 		// On ground, obey gravity.
 		if (behaviourManager.IsGrounded())
 			behaviourManager.GetRigidBody.useGravity = true;
@@ -155,5 +159,10 @@ public class MoveBehaviour : GenericBehaviour
 		}
 
 		return targetDirection;
+	}
+
+	public void CanMove()
+	{
+		canMove = !canMove;
 	}
 }

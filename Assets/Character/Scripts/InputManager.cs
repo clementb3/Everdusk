@@ -15,7 +15,7 @@ public static class InputManager
     public const string AnalogXAxis = "Analog X";                // Default horizontal axis joystick input name (referenced in ProjectSettings/InputManager.asset).
     public const string AnalogYAxis = "Analog Y";                // Default vertical axis joystick input name (referenced in ProjectSettings/InputManager.asset).
     public const string MouseScrollWheel = "Mouse ScrollWheel";  // Default mouse scrollwheel name (used to adapt move speed referenced in ProjectSettings/InputManager.asset).
-
+    public const string AttackButton = "Fire1";                  // Default attack button (left click referenced in ProjectSettings/InputManager.asset).
 
     // Boolean functions to know if a button is pressed or not.
     // Return true if the player pressed the JumpButton.
@@ -40,6 +40,12 @@ public static class InputManager
     public static bool SwitchShoulder()
     {
         return Input.GetButtonDown(ShoulderButton);
+    }
+
+    // Return true if the player pressed the AttackButton.
+    public static bool IsAttacking()
+    {
+        return Input.GetButtonDown(AttackButton);
     }
 
 

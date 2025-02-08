@@ -26,6 +26,6 @@ public static class GlobalSettings
 	public const float verticalAimingSpeed = 6f;                         // Vertical turn speed.
 	public const float maxVerticalAngle = 30f;                           // Camera max clamp angle. 
 	public const float minVerticalAngle = -60f;                          // Camera min clamp angle.
-	public static float angleH = 0;                                       // Float to store camera horizontal angle related to mouse movement.
-	public static float angleV = 0;                                       // Float to store camera vertical angle related to mouse movement.
+	public static float angleH = 0;                                      // Float to store camera horizontal angle related to mouse movement.
+	public static float angleV = 0;                                      // Float to store camera vertical angle related to mouse movement.
 }
