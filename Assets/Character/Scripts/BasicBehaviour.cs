@@ -38,7 +38,6 @@ public class BasicBehaviour : MonoBehaviour
 
 	void Awake ()
 	{
-		// Set up the references.
 		// References to the actions of the player
 		behaviours = new List<GenericBehaviour> ();
 		overridingBehaviours = new List<GenericBehaviour>();
@@ -302,6 +301,7 @@ public class BasicBehaviour : MonoBehaviour
 	}
 
 	// Function to tell whether or not the player is on ground.
+	// Kept it in this class to facilitate its use in other classes.
 	public bool IsGrounded()
 	{
 		Ray ray = new(transform.position + Vector3.up * 2 * colExtents.x, Vector3.down);

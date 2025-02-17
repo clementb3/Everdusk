@@ -68,6 +68,7 @@ public class MoveBehaviour : GenericBehaviour
 			// Keep forward movement while in the air if the player was already moving.
 			if (!behaviourManager.IsGrounded() && !isColliding && behaviourManager.GetTempLockStatus() && initialSpeed > 0.1)
 			{
+				// Add of an horizontal force.
 				behaviourManager.GetRigidBody.AddForce(GlobalSettings.jumpHorizontalForce * Physics.gravity.magnitude * GlobalSettings.sprintSpeed * transform.forward, ForceMode.Acceleration);
 			}
 			// Has landed?
@@ -104,7 +105,6 @@ public class MoveBehaviour : GenericBehaviour
 		// Set proper speed.
 		Vector2 dir = new(horizontal, vertical);
 		speed = Vector2.ClampMagnitude(dir, 1f).magnitude;
-		// This is for PC only, gamepads control speed via analog stick.
 		speedSeeker += InputManager.GetScrollWheelAxis();
 		speedSeeker = Mathf.Clamp(speedSeeker, GlobalSettings.walkSpeed, GlobalSettings.runSpeed);
 		speed *= speedSeeker;
@@ -155,23 +155,5 @@ public class MoveBehaviour : GenericBehaviour
 		}
 
 		return targetDirection;
-	}
-
-	// Collision detection.
-	private void OnCollisionStay(Collision collision)
-	{
-		isColliding = true;
-		// Slide on vertical obstacles
-		if (behaviourManager.IsCurrentBehaviour(GetBehaviourCode()) && collision.GetContact(0).normal.y <= 0.1f)
-		{
-			GetComponent<CapsuleCollider>().material.dynamicFriction = 0f;
-			GetComponent<CapsuleCollider>().material.staticFriction = 0f;
-		}
-	}
-	private void OnCollisionExit(Collision collision)
-	{
-		isColliding = false;
-		GetComponent<CapsuleCollider>().material.dynamicFriction = 0.6f;
-		GetComponent<CapsuleCollider>().material.staticFriction = 0.6f;
 	}
 }

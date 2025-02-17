@@ -23,11 +23,10 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 		cam = transform;
 
 		// Set camera default position.
-		cam.position = player.position + Quaternion.identity * GlobalSettings.pivotOffset + Quaternion.identity * GlobalSettings.camOffset;
-		cam.rotation = Quaternion.identity;
+		cam.SetPositionAndRotation(player.position + Quaternion.identity * GlobalSettings.pivotOffset + Quaternion.identity * GlobalSettings.camOffset, Quaternion.identity);
 
-		// Set up references and default values.
-		smoothPivotOffset = GlobalSettings.pivotOffset;
+        // Set up references and default values.
+        smoothPivotOffset = GlobalSettings.pivotOffset;
 		smoothCamOffset = GlobalSettings.camOffset;
 		defaultFOV = cam.GetComponent<Camera>().fieldOfView;
 		GlobalSettings.angleH = player.eulerAngles.y;
@@ -38,13 +37,12 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 
 		// Check for no vertical offset.
 		if (GlobalSettings.camOffset.y > 0)
-			Debug.LogWarning("Vertical Cam Offset (Y) will be ignored during collisions!\n" +
-				"It is recommended to set all vertical offset in Pivot Offset.");
+			Debug.LogWarning("Vertical offset is ignored during collision");
 	}
 
 	void Update()
 	{
-		// Get mouse movement to orbit the camera.
+		// Get movement to orbit the camera.
 		// Mouse:
 		GlobalSettings.angleH += Mathf.Clamp(InputManager.GetMouseX(), -1, 1) * GlobalSettings.horizontalAimingSpeed;
 		GlobalSettings.angleV += Mathf.Clamp(InputManager.GetMouseY(), -1, 1) * GlobalSettings.verticalAimingSpeed;
@@ -68,7 +66,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 		Vector3 noCollisionOffset = targetCamOffset;
 		while (noCollisionOffset.magnitude >= 0.2f)
 		{
-			if (DoubleViewingPosCheck(baseTempPosition + aimRotation * noCollisionOffset))
+			if (CollisionManager.DoubleViewingPosCheck(baseTempPosition + aimRotation * noCollisionOffset, player))
 				break;
 			noCollisionOffset -= noCollisionOffset.normalized * 0.2f;
 		}
@@ -122,67 +120,25 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 	// Set custom Field of View.
 	public void SetFOV(float customFOV)
 	{
-		this.targetFOV = customFOV;
+		targetFOV = customFOV;
 	}
 
 	// Reset Field of View to default value.
 	public void ResetFOV()
 	{
-		this.targetFOV = defaultFOV;
+		targetFOV = defaultFOV;
 	}
 
 	// Set max vertical camera rotation angle.
 	public void SetMaxVerticalAngle(float angle)
 	{
-		this.targetMaxVerticalAngle = angle;
+		targetMaxVerticalAngle = angle;
 	}
 
 	// Reset max vertical camera rotation angle to default value.
 	public void ResetMaxVerticalAngle()
 	{
-		this.targetMaxVerticalAngle = GlobalSettings.maxVerticalAngle;
-	}
-
-	// Double check for collisions: concave objects doesn't detect hit from outside, so cast in both directions.
-	bool DoubleViewingPosCheck(Vector3 checkPos)
-	{
-		return ViewingPosCheck (checkPos) && ReverseViewingPosCheck (checkPos);
-	}
-
-	// Check for collision from camera to player.
-	bool ViewingPosCheck (Vector3 checkPos)
-	{
-		// Cast target and direction.
-		Vector3 target = player.position + GlobalSettings.pivotOffset;
-		Vector3 direction = target - checkPos;
-		// If a raycast from the check position to the player hits something...
-		if (Physics.SphereCast(checkPos, 0.2f, direction, out RaycastHit hit, direction.magnitude))
-		{
-			// ... if it is not the player...
-			if(hit.transform != player && !hit.transform.GetComponent<Collider>().isTrigger)
-			{
-				// This position isn't appropriate.
-				return false;
-			}
-		}
-		// If we haven't hit anything or we've hit the player, this is an appropriate position.
-		return true;
-	}
-
-	// Check for collision from player to camera.
-	bool ReverseViewingPosCheck(Vector3 checkPos)
-	{
-		// Cast origin and direction.
-		Vector3 origin = player.position + GlobalSettings.pivotOffset;
-		Vector3 direction = checkPos - origin;
-		if (Physics.SphereCast(origin, 0.2f, direction, out RaycastHit hit, direction.magnitude))
-		{
-			if(hit.transform != player && hit.transform != transform && !hit.transform.GetComponent<Collider>().isTrigger)
-			{
-				return false;
-			}
-		}
-		return true;
+		targetMaxVerticalAngle = GlobalSettings.maxVerticalAngle;
 	}
 
 	// Get camera magnitude.

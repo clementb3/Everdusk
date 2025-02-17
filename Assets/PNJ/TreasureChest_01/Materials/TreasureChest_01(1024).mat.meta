@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c8e29fc1b9d6f2d4f814cf38b7d77cb1
+timeCreated: 1482372755
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 78920
+  packageName: Free Simple Treasure Chest
+  packageVersion: 1.0
+  assetPath: Assets/TreasureChest_01/Materials/TreasureChest_01(1024).mat
+  uploadId: 152672
