@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Component used to assign data for items in the scene.
+// Class used to assign data for items in the scene.
 [CreateAssetMenu(fileName = "Item", menuName = "Items/New Item")]
 public class ItemData : ScriptableObject
 {
@@ -9,6 +9,7 @@ public class ItemData : ScriptableObject
     public GameObject prefab;
     public ItemType itemType;
     public EquipmentType equipmentType;
+    public bool isEquipped = false;
 }
 
 public enum ItemType
@@ -24,5 +25,6 @@ public enum EquipmentType
     Chest,
     Hands,
     Legs,
-    Feet
+    Feet, 
+    Weapon
 }

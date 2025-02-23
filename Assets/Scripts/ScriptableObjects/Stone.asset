@@ -15,3 +15,6 @@ MonoBehaviour:
   name: Stone
   visual: {fileID: 21300000, guid: f7111abcf951a1f4398426869d06640b, type: 3}
   prefab: {fileID: 438718335261583196, guid: 5e97b706afde8bc4da268dd274270c91, type: 3}
+  itemType: 0
+  equipmentType: 0
+  isEquipped: 0

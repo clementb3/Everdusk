@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Iron Gloves
   visual: {fileID: 21300000, guid: 3f3f612e2e18b4742ba62c1d294abdc6, type: 3}
-  prefab: {fileID: 8605495733684658373, guid: f1d48f554f55525498a999462cb96338, type: 3}
+  prefab: {fileID: 7154926455768195267, guid: f1d48f554f55525498a999462cb96338, type: 3}
   itemType: 2
   equipmentType: 2

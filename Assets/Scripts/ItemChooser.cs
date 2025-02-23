@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class ItemChooser : MonoBehaviour
 {
-    public ItemData item;
-
+    [HideInInspector]
+    public ItemData item;      // Reference to the item chosen.
     public void ChooseItem()
     {
         Debug.Log(item);
-        if (item != Inventory.instance.GetSelecteditem())
-            Inventory.instance.OpenItemAction(item);
+        if (item != ItemActionSystem.instance.GetSelectedItem())
+            ItemActionSystem.instance.OpenItemAction(item);
         else
-            Inventory.instance.CloseItemAction();
+            ItemActionSystem.instance.CloseItemAction();
     }
 }

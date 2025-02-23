@@ -42,6 +42,7 @@ public class Pickup : MonoBehaviour
         }
     }
 
+    // Debug functions for the collision capsule.
     // Method to draw the detection cone.
     void DebugDrawCone(Vector3 origin, Vector3 forward, float angle, float range, int segments, Color color)
     {

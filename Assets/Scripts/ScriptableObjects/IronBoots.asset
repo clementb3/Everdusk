@@ -16,4 +16,5 @@ MonoBehaviour:
   visual: {fileID: 21300000, guid: afd2e8edfd779164c8c91cb789a8e90c, type: 3}
   prefab: {fileID: 7052738908798478804, guid: 8ac809f650b6db442a7afaa794bb618e, type: 3}
   itemType: 2
-  equipmentType: 4
+  equipmentType: 0
+  isEquipped: 0
