@@ -72,12 +72,17 @@ public class AnimationManager
         animator.SetFloat(v, vertical, 0.1f, Time.deltaTime);
     }
 
-    // Attack animation 
-    public void Attack ()
+    // Combat animation 
+    public void AttackOneHanded ()
     {
         animator.SetTrigger("Attack");
     }
 
+    public void AttackFist ()
+    {
+        animator.SetTrigger("Fist");
+    }
+    
     // Pickup animation
     internal void Pickup()
     {

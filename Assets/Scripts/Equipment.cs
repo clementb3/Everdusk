@@ -9,6 +9,8 @@ public class Equipment : MonoBehaviour
     private ItemActionSystem itemActionSystem;    // Reference to the itemActionSystem class.
     [SerializeField]
     private EquipmentLibrary equipmentLibrary;    // Reference to the list of equipment used to equip items from the inventory.
+    [SerializeField]
+    private PlayerStat playerStat;                // Reference to the player stat script.
     
     // References to equipped items;
     private ItemData equippedHead;                // Reference to the actual head equipment.
@@ -21,9 +23,11 @@ public class Equipment : MonoBehaviour
     // Function called by the equip/unequip button to equip/unequip an item.
     public void EquipItem()
     {
+        // Get the corresponding items to the item to equip.
         EquipmentItem equipmentItem = GetEquipmentItem(itemActionSystem.GetSelectedItem());
         if (equipmentItem != null)
         {
+            // Item already equiped => unequip it.
             if (itemActionSystem.GetSelectedItem().isEquipped)
                 UnequipItem(equipmentItem);
             else
@@ -55,8 +59,12 @@ public class Equipment : MonoBehaviour
                         equippedWeapon = itemActionSystem.GetSelectedItem();
                         break;
                 }
+                // Add the armor points of the equipment.
+                playerStat.currentArmor += itemActionSystem.GetSelectedItem().armorPoints;
+                // Unactive the corresponding items to the item to equip.
                 for (int i = 0; i < equipmentItem.disableItem.Length; i++)
                     equipmentItem.disableItem[i].SetActive(false);
+                // Active the item to equip.
                 equipmentItem.prefab.SetActive(true);
                 itemActionSystem.GetSelectedItem().isEquipped = true;
                 Inventory.instance.RefreshContent();
@@ -69,23 +77,33 @@ public class Equipment : MonoBehaviour
 
     public void UnequipItem(EquipmentItem equipmentItem)
     {
+        // Active the corresponding equipment to the item to unequip.
         for (int i = 0; i < equipmentItem.disableItem.Length; i++)
             equipmentItem.disableItem[i].SetActive(true);
+        // Unactive the item to unequip.
         equipmentItem.prefab.SetActive(false);
         itemActionSystem.GetSelectedItem().isEquipped = false;
+        // Remove the armor points of the equipment.
+        playerStat.currentArmor -= equipmentItem.itemData.armorPoints;
         Inventory.instance.RefreshContent();
     }
 
-    // Unequip an equipment before wearing another one.
+    // Unequip an item before wearing another one.
     private void DisablePreviousEquipment(ItemData item)
     {
+        // No previous equipment => return.
         if (item == null)
             return;
+        // Else get the previous equipment.
         EquipmentItem equipmentItem = GetEquipmentItem(item);
+        // Active the corresponding equipment to the item to disable.
         for (int i = 0; i < equipmentItem.disableItem.Length; i++)
             equipmentItem.disableItem[i].SetActive(true);
+        // Unactive the previous equipment.
         equipmentItem.prefab.SetActive(false);
         item.isEquipped = false;
+        // Remove the armor points of the previous equipment.
+        playerStat.currentArmor -= item.armorPoints;
         Inventory.instance.RefreshContent();
     }
 
@@ -93,5 +111,11 @@ public class Equipment : MonoBehaviour
     public EquipmentItem GetEquipmentItem(ItemData item)
     {
         return equipmentLibrary.content.FirstOrDefault(equip => equip.itemData == item);
+    }
+
+    // Check if there is already a weapon equipped.
+    public bool IsWeaponEquipped()
+    {
+        return equippedWeapon != null;
     }
 }

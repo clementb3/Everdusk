@@ -4,17 +4,24 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Item", menuName = "Items/New Item")]
 public class ItemData : ScriptableObject
 {
+    [Header("DATA")]
     public new string name;
     public Sprite visual;
     public GameObject prefab;
     public ItemType itemType;
+
+    [Header("TYPE")]
     public EquipmentType equipmentType;
     public bool isEquipped = false;
+
+    [Header("EQUIPMENT STATS")]
+    public float armorPoints;
+    public float weaponDamage;
 }
 
 public enum ItemType
 {
-    Ressource,
+    Resource,
     Consumable,
     Equipment
 }

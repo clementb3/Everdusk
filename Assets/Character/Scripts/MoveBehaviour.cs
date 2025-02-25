@@ -161,8 +161,15 @@ public class MoveBehaviour : GenericBehaviour
 		return targetDirection;
 	}
 
+	// Enable/disable players' movement.
 	public void CanMove()
 	{
 		canMove = !canMove;
+	}
+
+	// Getter.
+	public bool GetCanMove()
+	{
+		return canMove;
 	}
 }

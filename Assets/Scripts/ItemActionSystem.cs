@@ -36,7 +36,7 @@ public class ItemActionSystem : MonoBehaviour
 
         switch (item.itemType)
         {
-            case ItemType.Ressource:
+            case ItemType.Resource:
                 useItem.SetActive(false);
                 equipItem.SetActive(false);
                 unequipItem.SetActive(false);
