@@ -9,6 +9,7 @@ public class PickupBehaviour : GenericBehaviour
     [SerializeField]
     private MoveBehaviour moveBehaviour;          // Reference to the players' movement behaviour.
     private Item currentItem;                     // Reference to the item picked.
+    private bool isBusy = false;
     void Start()
     {
         animationManager = new AnimationManager(behaviourManager.GetAnim);
@@ -16,6 +17,9 @@ public class PickupBehaviour : GenericBehaviour
 
     public void Pickup (Item pickupItem)
     {
+        if(isBusy)
+            return;
+        isBusy = true;
         currentItem = pickupItem;
         animationManager.Pickup();
         ChangeMovement();
@@ -36,5 +40,6 @@ public class PickupBehaviour : GenericBehaviour
     public void ChangeMovement()
     {
         moveBehaviour.CanMove();
+        isBusy = false;
     }
 }

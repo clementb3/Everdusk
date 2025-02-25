@@ -22,8 +22,8 @@ public static class GlobalSettings
     public static Vector3 pivotOffset = new(0.0f, 1.7f,  0.0f);          // Offset to repoint the camera.
 	public static Vector3 camOffset = new(0.0f, 0.0f, -3.0f);            // Offset to relocate the camera related to the player position.
 	public const float smooth = 10f;                                     // Speed of camera responsiveness.
-	public const float horizontalAimingSpeed = 6f;                       // Horizontal turn speed.
-	public const float verticalAimingSpeed = 6f;                         // Vertical turn speed.
+	public static float horizontalAimingSpeed = 6f;                             // Horizontal turn speed.
+	public static float verticalAimingSpeed = 6f;                         // Vertical turn speed.
 	public const float maxVerticalAngle = 30f;                           // Camera max clamp angle. 
 	public const float minVerticalAngle = -60f;                          // Camera min clamp angle.
 	public static float angleH = 0;                                      // Float to store camera horizontal angle related to mouse movement.

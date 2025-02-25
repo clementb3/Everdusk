@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +7,7 @@ public class Inventory : MonoBehaviour
 {
     [Header("INVENTORY REFERENCES")]
     [SerializeField]
-    private List<ItemData> content = new();       // List of the items in the inventory.
+    private List<ItemStacked> content = new();       // List of the items in the inventory.
     public static Inventory instance;             // Reference of the inventory.
 
     [Header("DISPLAY INVENTORY REFERENCES")]
@@ -70,26 +71,36 @@ public class Inventory : MonoBehaviour
     // Function called in the animation of pickup to add an item in the inventory.
     public void AddItem(ItemData item)
     {
-        content.Add(item);
+        ItemStacked itemStacked = GetItemStacked(item);
+        if (itemStacked != null)
+            itemStacked.count++;
+        else
+            content.Add(new ItemStacked { itemData = item, count = 1 });
         RefreshContent();
     }
 
-    public void RemoveItem(ItemData item)
+    public void RemoveItem(ItemData item, int count = 1)
     {
-        content.Remove(item);
+        ItemStacked itemStacked = GetItemStacked(item);
+        if (itemStacked.count > count)
+            itemStacked.count -= count;
+        else
+            content.Remove(itemStacked);
         RefreshContent();
     }
 
     // Function to add the item to the displayed inventory.
-    public void AddMenuItem(ItemData item)
+    public void AddMenuItem(ItemStacked item)
     {
         GameObject newItem = Instantiate(button, transform.position, transform.rotation);
         newItem.transform.SetParent(displayedContent.transform, true);
-        string name = $"  {item.name}";
+        string name = $"  {item.itemData.name}";
         newItem.name = name;
+        if (item.count > 1)
+            name += $" ({item.count})";
         newItem.SetActive(true);
-        newItem.GetComponentInChildren<Text>().text = item.isEquipped ? name + " [Equipped]" : name;
-        newItem.GetComponent<ItemChooser>().item = item;
+        newItem.GetComponentInChildren<Text>().text = item.itemData.isEquipped ? name + " [Equipped]" : name;
+        newItem.GetComponent<ItemChooser>().item = item.itemData;
     }
 
     // Function called to refresh the displayed inventory.
@@ -106,4 +117,17 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < content.Count; i++)
             AddMenuItem(content[i]);
     }
+
+    // Getter
+    public ItemStacked GetItemStacked(ItemData itemData)
+    {
+        return content.Where(elem => elem.itemData == itemData).FirstOrDefault();
+    }
+}
+
+[System.Serializable]
+public class ItemStacked
+{
+    public ItemData itemData;
+    public int count;
 }

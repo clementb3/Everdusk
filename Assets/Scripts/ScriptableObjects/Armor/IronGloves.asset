@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83118ad8c33730d4f920f72014ee94f8, type: 3}
+  m_Name: IronGloves
+  m_EditorClassIdentifier: 
+  name: Iron Gloves
+  visual: {fileID: 21300000, guid: 3f3f612e2e18b4742ba62c1d294abdc6, type: 3}
+  prefab: {fileID: 7154926455768195267, guid: f1d48f554f55525498a999462cb96338, type: 3}
+  itemType: 2
+  equipmentType: 2

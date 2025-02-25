@@ -16,6 +16,7 @@ public class Equipment : MonoBehaviour
     private ItemData equippedHands;               // Reference to the actual hands equipment.
     private ItemData equippedChest;               // Reference to the actual chest equipment.
     private ItemData equippedFeet;                // Reference to the actual feet equipment.
+    private ItemData equippedWeapon;              // Reference to the actual weapon equipped.
 
     // Function called by the equip/unequip button to equip/unequip an item.
     public void EquipItem()
@@ -48,6 +49,10 @@ public class Equipment : MonoBehaviour
                     case EquipmentType.Feet:
                         DisablePreviousEquipment(equippedFeet);
                         equippedFeet = itemActionSystem.GetSelectedItem();
+                        break;
+                    case EquipmentType.Weapon:
+                        DisablePreviousEquipment(equippedWeapon);
+                        equippedWeapon = itemActionSystem.GetSelectedItem();
                         break;
                 }
                 for (int i = 0; i < equipmentItem.disableItem.Length; i++)
