@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class NewCharacterRandomMovement : MonoBehaviour
+public class CharacterRandomMovement : MonoBehaviour
 {
     public NavMeshAgent agent;
     public Transform player;
@@ -10,7 +10,7 @@ public class NewCharacterRandomMovement : MonoBehaviour
     public float minZ = 300f;
     public float maxZ = 600f;
     public float stopDistance = 1f;
-    public float detectionDistance = 10f;
+    public float detectionDistance = 30f;
     public float rotationSpeed = 5f;
     public Animator animator;
 

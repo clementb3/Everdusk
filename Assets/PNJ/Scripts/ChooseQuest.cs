@@ -1,108 +1,31 @@
-/*
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI; 
-using TMPro;
-
-public class QuestGiver : MonoBehaviour {
-    
-    public float distance;
-    public GameObject ActionDisplay;
-    public GameObject ActionText;
-    public GameObject player;
-    public GameObject TextBox;
-    public GameObject NPCName;
-    public GameObject NPCText;
-
-    void Update()
-    {
-        distance = PlayerCasting.distanceFromTarget;   
-    }
-
-    void OnMouseOver()
-    { 
-        //if(distance <= 3)
-        if(distance <= 15)
-        {
-            //AttackBlocker.BlockSword = 1;
-            //ActionText.GetComponent<Text>().text = "Talk";
-            ActionText.GetComponent<TMP_Text>().text = "Talk";
-
-            ActionDisplay.SetActive(true);
-            ActionText.SetActive(true);            
-        }
-        if(Input.GetButtonDown("Action"))
-        { Debug.Log("In Action");
-            if(distance <= 15)
-            {
-                //AttackBlocker.BlockSword = 2;
-                Screen.lockCursor = false;
-                Cursor.visible = true;
-                ActionDisplay.SetActive(false);
-                ActionText.SetActive(false);
-                StartCoroutine(NPCActive());
-            }
-        }
-    }
-
-    void OnMouseExit()
-    {
-        //AttackBlocker.BlockSword = 0;
-        ActionDisplay.SetActive(false);
-        ActionText.SetActive(false);
-    }
-
-    IEnumerator NPCActive()
-    {
-        TextBox.SetActive(true);
-        //NPCName.GetComponent<Text>().text = "Warrior";
-        NPCName.GetComponent<TMP_Text>().text = "Warrior";
-        NPCName.SetActive(true);
-        //NPCText.GetComponent<Text>().text = "Hello there! I have a quest for you. Please help me to find my treasur!";
-        NPCText.GetComponent<TMP_Text>().text = "Hello there! I have a quest for you. Please help me to find my treasur!";
-        NPCText.SetActive(true);       
-        yield return new WaitForSeconds(5.0f);
-        NPCName.SetActive(false);
-        NPCText.SetActive(false);
-        TextBox.SetActive(false);
-        ActionDisplay.SetActive(false);
-        ActionText.SetActive(false);
-    }
-} */
-
-
 using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class QuestGiver : MonoBehaviour
+public class ChooseQuest : MonoBehaviour
 {
-    public float interactionDistance = 15f;
+    public float interactionDistance = 30f;
     public GameObject ActionDisplay;
     public GameObject ActionText;
     public GameObject player;
 
-    // Panneaux de dialogue séparés
+    // UI elements
     public GameObject NPCBox;
     public GameObject PlayerBox;
-
-    // UI pour le PNJ
     public GameObject NPCName;
     public GameObject NPCText;
-
-    // UI pour le Joueur
     public GameObject PlayerName;
     public GameObject PlayerText;
-
-    // Panneau des choix et boutons
     public GameObject ChoicesPanel;
     public Button Quest1Button;
     public Button Quest2Button;
     public Button Quest3Button;
+    public Animator animator;
 
     private bool isTalking = false;
+    private bool hasTalked = false;
+    private bool waitingForPlayerResponse = false; // Ajout pour attendre la touche "E"
 
     void Start()
     {
@@ -130,64 +53,85 @@ public class QuestGiver : MonoBehaviour
     {
         float distance = Vector3.Distance(player.transform.position, transform.position);
 
-        if (Input.GetButtonDown("Action") && distance <= interactionDistance && !isTalking)
+        // Si le joueur entre dans la zone d'interaction, démarrer la conversation si elle n'est pas en cours
+        if (distance <= interactionDistance && !isTalking && !hasTalked)
         {
             StartConversation();
         }
-    }
-
-    void OnMouseOver()
-    {
-        float distance = Vector3.Distance(player.transform.position, transform.position);
-
-        if (distance <= interactionDistance && !isTalking)
+        // Fin de la conversation si le joueur s'éloigne
+        else if (distance > interactionDistance && hasTalked)
         {
-            ActionText.GetComponent<TMP_Text>().text = "Talk";
-            ActionDisplay.SetActive(true);
-            ActionText.SetActive(true);
+            EndConversation();
         }
-    }
 
-    void OnMouseExit()
-    {
-        if (!isTalking)
+        // Le joueur appuie sur "E" pour répondre
+        if (waitingForPlayerResponse && Input.GetKeyDown(KeyCode.E))
         {
-            ActionDisplay.SetActive(false);
-            ActionText.SetActive(false);
+            PlayerRespond();
         }
     }
 
     void StartConversation()
     {
         isTalking = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        hasTalked = true;
+        waitingForPlayerResponse = false;
+
+        // Réinitialisation de l'état de l'animator pour bien jouer l'animation de "parler"
+        animator.SetBool("isTalking", true);
+
+        Debug.Log("Starting conversation...");
+
+        // Désactivation de l'affichage des actions
         ActionDisplay.SetActive(false);
         ActionText.SetActive(false);
 
-        // Affichage du texte du joueur dans son propre panneau
-        PlayerBox.SetActive(true);
-        PlayerName.GetComponent<TMP_Text>().text = "Player";
-        PlayerName.SetActive(true);
-        PlayerText.GetComponent<TMP_Text>().text = "Hello, do you have a quest for me?";
-        PlayerText.SetActive(true);
+        // Réinitialisation des éléments de texte du PNJ avant d'afficher le texte
+        NPCBox.SetActive(true);
+        NPCName.GetComponent<TMP_Text>().text = "NPC";
+        NPCText.GetComponent<TMP_Text>().text = ""; // Réinitialiser le texte à chaque nouvelle rencontre
+        Debug.Log("NPCText reset!");
 
-        StartCoroutine(WaitAndShowNPCResponse());
+        // Affichage du texte du PNJ
+        StartCoroutine(DisplayNPCText("Hello, can I help you?"));
     }
 
-    IEnumerator WaitAndShowNPCResponse()
+    IEnumerator DisplayNPCText(string text)
+    {
+        Debug.Log("Displaying NPC text: " + text);
+        NPCText.GetComponent<TMP_Text>().text = text; // Affichage du texte
+        yield return new WaitForSeconds(2.0f); // Attendre un peu avant de montrer la réponse du joueur
+
+        // Afficher "Press E to respond"
+        ActionText.GetComponent<TMP_Text>().text = "Press E to respond";
+        ActionDisplay.SetActive(true);
+        ActionText.SetActive(true);
+        waitingForPlayerResponse = true; // Active l'attente de réponse
+    }
+
+    void PlayerRespond()
+    {
+        waitingForPlayerResponse = false;
+        ActionDisplay.SetActive(false);
+        ActionText.SetActive(false);
+
+        // Afficher la réponse du joueur
+        PlayerBox.SetActive(true);
+        PlayerName.GetComponent<TMP_Text>().text = "Player";
+        PlayerText.GetComponent<TMP_Text>().text = "Yes, do you have a quest for me?";
+
+        // Passer à l'affichage des choix de quête
+        StartCoroutine(ShowQuestOptions());
+    }
+
+    IEnumerator ShowQuestOptions()
     {
         yield return new WaitForSeconds(2.0f);
 
-        // Cacher le panneau du joueur
         PlayerBox.SetActive(false);
-
-        // Affichage du texte du PNJ dans son propre panneau
         NPCBox.SetActive(true);
-        NPCName.GetComponent<TMP_Text>().text = "QG";
-        NPCName.SetActive(true);
-        NPCText.GetComponent<TMP_Text>().text = "Hello! I have some quests for you. \nChoose one:";
-        NPCText.SetActive(true);
+        NPCName.GetComponent<TMP_Text>().text = "NPC";
+        NPCText.GetComponent<TMP_Text>().text = "Yes! Here are some quests:";
 
         ChoicesPanel.SetActive(true);
     }
@@ -195,7 +139,7 @@ public class QuestGiver : MonoBehaviour
     void SelectQuest(string questName)
     {
         ChoicesPanel.SetActive(false);
-        NPCText.GetComponent<TMP_Text>().text = "See you, I wish you good luck \non your quest: " + questName + "!";
+        NPCText.GetComponent<TMP_Text>().text = "Good luck with your quest: " + questName + "!";
 
         StartCoroutine(CloseDialogue());
     }
@@ -203,19 +147,19 @@ public class QuestGiver : MonoBehaviour
     IEnumerator CloseDialogue()
     {
         yield return new WaitForSeconds(3.0f);
-
-        NPCBox.SetActive(false);
-        NPCName.SetActive(false);
-        NPCText.SetActive(false);
-
-        isTalking = false;
-
-        // Vérifie si le joueur est en mode UI avant de cacher la souris
-        if (!ChoicesPanel.activeSelf)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        EndConversation();
     }
 
+    void EndConversation()
+    {
+        Debug.Log("Ending conversation...");
+        NPCBox.SetActive(false);
+        isTalking = false;
+        animator.SetBool("isTalking", false);
+
+        // Réinitialiser l'état de la conversation
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        hasTalked = false; // Permet au PNJ de parler à nouveau quand le joueur revient
+    }
 }
