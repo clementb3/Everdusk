@@ -9,7 +9,9 @@ public class PickupBehaviour : GenericBehaviour
     [SerializeField]
     private MoveBehaviour moveBehaviour;          // Reference to the players' movement behaviour.
     private Item currentItem;                     // Reference to the item picked.
-    private bool isBusy = false;
+    
+    [HideInInspector]
+    public bool isBusy = false;
     void Start()
     {
         animationManager = new AnimationManager(behaviourManager.GetAnim);

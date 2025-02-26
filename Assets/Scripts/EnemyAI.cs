@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -23,6 +22,10 @@ public class EnemyAI : MonoBehaviour
     private float attackDamage;        // Number of damage points the enemy inflicts.
     [SerializeField]
     private float rotationSpeed;       // Speed at which the enemy rotates.
+    [SerializeField]
+    private float maxHealth;           // Max health of the enemy.
+    private float currentHealth;       // Current health of the enemy.
+    private bool isDead;               // Boolean to know if an enemy is dead and to disable its functionalities.
 
     [Header("WAIT PARAMETERS")]
     [SerializeField]
@@ -50,17 +53,22 @@ public class EnemyAI : MonoBehaviour
         Transform playerTmp = GameObject.FindGameObjectWithTag("Player").transform;
         player = playerTmp;
         playerStat = playerTmp.GetComponent<PlayerStat>();
+        currentHealth = maxHealth;
     }
 
     void Update()
     {
-        if (Vector3.Distance(player.position, transform.position) <= detectionRadius && !playerStat.GetIsDead())
+        // Check if the player is in the enemys' detection area.
+        if (Vector3.Distance(player.position, transform.position) <= detectionRadius && !playerStat.IsDead())
         {
+            // Chase the player.
             agent.speed = runSpeed;
+            // Rotate the enemy to front the player.
             Quaternion rotation = Quaternion.LookRotation(player.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
             if (!isAttacking)
             {
+                // Check if the player is in the enemys' attack area.
                 if (Vector3.Distance(player.position, transform.position) < attackRadius)
                     StartCoroutine(AttackPlayer());
                 else
@@ -70,12 +78,14 @@ public class EnemyAI : MonoBehaviour
         else
         {
             agent.speed = walkSpeed;
+            // Set a random destination for the enemy.
             if (agent.remainingDistance < 0.75f && !destination)
                 StartCoroutine(GetNewDestination());
         }
         animator.SetFloat("Speed", agent.velocity.magnitude);
     }
 
+    // Function to define a new destination for the enemy.
     IEnumerator GetNewDestination()
     {
         destination = true;
@@ -87,17 +97,44 @@ public class EnemyAI : MonoBehaviour
         destination = false;
     }
 
+    // Logic behind the enemys' attack.
     IEnumerator AttackPlayer()
     {
         isAttacking = true;
         agent.isStopped = true;
+        // Start the attacks' animation.
         animator.SetTrigger("Attack");
+        // Inflicts damage to the player.
         playerStat.TakeDamage(attackDamage);
         yield return new WaitForSeconds(attackDelay);
-        agent.isStopped = false;
+        if(agent.enabled)
+            agent.isStopped = false;
         isAttacking = false;
     }
 
+    // Function to inflict damage to the enemy.
+    public void TakeDamage(float damage)
+    {
+        if(isDead)
+            return;
+        currentHealth -= damage;
+        if(currentHealth <= 0)
+            Die();
+        else 
+            animator.SetTrigger("GetHit");
+    }
+
+    void Die()
+    {
+        isDead = true;
+        animator.SetTrigger("Dead");
+        // Unactive enemys' movement.
+        agent.enabled = false;
+        // Unactive script on the enemy.
+        enabled = false;
+    }
+
+    // Debug for the detection and attack areas, draw their respective sphere.
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;

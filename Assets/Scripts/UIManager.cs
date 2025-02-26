@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour
     private GameObject[] UIPanels;     // References to different panels like the inventory.
     private float defaultHSpeed;       // Reference to the default horizontal aiming speed stored in GlobalSettings.
     private float defaultVSpeed;       // Reference to the default vertical aiming speed stored in GlobalSettings.
+    [HideInInspector]
+    public bool panelOpened = false;   // Bool to check if a panel is opened.
     void Start()
     {
         defaultHSpeed = GlobalSettings.horizontalAimingSpeed;
@@ -15,7 +17,8 @@ public class UIManager : MonoBehaviour
 
     void Update()
     {
-        if(UIPanels.Any((panel) => panel == panel.activeSelf))
+        panelOpened = UIPanels.Any((panel) => panel == panel.activeSelf);
+        if(panelOpened)
         {
             // Disable camera movement.
             GlobalSettings.horizontalAimingSpeed = 0f;

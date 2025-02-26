@@ -5,14 +5,19 @@ public class Attack : GenericBehaviour
 {
     private bool isAttacking;
     private AnimationManager animationManager;   // Management of the different animations.
+    [Header("SCRIPT REFERENCES")]
     [SerializeField]
     private Equipment equipment;                 // Reference to the equipment class.
     [SerializeField]
-    private GameObject[] UIPanels;               // References to different panels like the inventory.
+    private UIManager uIManager;                 // References to different panels like the inventory.
     [SerializeField]
-    private float attackRange;
+    private PickupBehaviour pickupBehaviour;
+
+    [Header("PARAMETERS")]
     [SerializeField]
-    private Vector3 attackOffset;
+    private float attackRange;                   // Range at which the player hit the enemy.
+    [SerializeField]
+    private Vector3 attackOffset;                // Offset to put the 
     void Start()
     {
         animationManager = new AnimationManager(behaviourManager.GetAnim);
@@ -21,10 +26,7 @@ public class Attack : GenericBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(transform.position + attackOffset, transform.forward * attackRange, Color.red);
-        if (UIPanels.Any((panel) => panel == panel.activeSelf))
-            return;
-        if (InputManager.IsAttacking() && !isAttacking)
+        if (InputManager.IsAttacking() && CanAttack())
         {
             isAttacking = true;
             if (equipment.IsWeaponEquipped())
@@ -46,10 +48,22 @@ public class Attack : GenericBehaviour
         if(Physics.Raycast(transform.position + attackOffset, transform.forward, out hit, attackRange))
         {
             if(hit.transform.CompareTag("Enemy"))
-                Debug.Log("enemy hit");
+            {
+                EnemyAI enemy = hit.transform.GetComponent<EnemyAI>();
+                // If we are using our fists.
+                if(!equipment.GetEquippedWeapon())
+                    enemy.TakeDamage(2f);
+                else
+                    enemy.TakeDamage(equipment.GetEquippedWeapon().weaponDamage);
+            }
         }
     }
 
+    // Check if th player is not doing another action or if the inventory is not open.
+    bool CanAttack()
+    {
+        return !isAttacking && !uIManager.panelOpened && !pickupBehaviour.isBusy;
+    }
     public void AttackFinished()
     {
         isAttacking = false;

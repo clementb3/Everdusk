@@ -123,6 +123,11 @@ public class Inventory : MonoBehaviour
     {
         return content.Where(elem => elem.itemData == itemData).FirstOrDefault();
     }
+
+    public List<ItemStacked> GetContent()
+    {
+        return content;
+    }
 }
 
 [System.Serializable]

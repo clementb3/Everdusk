@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ public class Equipment : MonoBehaviour
     private EquipmentLibrary equipmentLibrary;    // Reference to the list of equipment used to equip items from the inventory.
     [SerializeField]
     private PlayerStat playerStat;                // Reference to the player stat script.
-    
+
     // References to equipped items;
     private ItemData equippedHead;                // Reference to the actual head equipment.
     private ItemData equippedLegs;                // Reference to the actual legs equipment.
@@ -19,6 +20,11 @@ public class Equipment : MonoBehaviour
     private ItemData equippedChest;               // Reference to the actual chest equipment.
     private ItemData equippedFeet;                // Reference to the actual feet equipment.
     private ItemData equippedWeapon;              // Reference to the actual weapon equipped.
+
+    void Start()
+    {
+        EquipAll();
+    }
 
     // Function called by the equip/unequip button to equip/unequip an item.
     public void EquipItem()
@@ -117,5 +123,54 @@ public class Equipment : MonoBehaviour
     public bool IsWeaponEquipped()
     {
         return equippedWeapon != null;
+    }
+
+    // Function called in start to equip potential equipped items in the inventory. 
+    void EquipAll()
+    {
+        List<ItemStacked> content = Inventory.instance.GetContent();
+        for (int i = 0; i < content.Count; i++)
+        {
+            if (content[i].itemData.isEquipped)
+            {
+                EquipmentItem equipmentItem = GetEquipmentItem(content[i].itemData);
+                switch (content[i].itemData.equipmentType)
+                {
+                    case EquipmentType.Head:
+                        equippedHead = content[i].itemData;
+                        break;
+                    case EquipmentType.Chest:
+                        equippedChest = content[i].itemData;
+                        break;
+                    case EquipmentType.Hands:
+                        equippedHands = content[i].itemData;
+                        break;
+                    case EquipmentType.Legs:
+                        equippedLegs = content[i].itemData;
+                        break;
+                    case EquipmentType.Feet:
+                        equippedFeet = content[i].itemData;
+                        break;
+                    case EquipmentType.Weapon:
+                        equippedWeapon = content[i].itemData;
+                        break;
+                }
+                // Add the armor points of the equipment.
+                playerStat.currentArmor += content[i].itemData.armorPoints;
+                // Unactive the corresponding items to the item to equip.
+                for (int j = 0; j < equipmentItem.disableItem.Length; j++)
+                    equipmentItem.disableItem[j].SetActive(false);
+                // Active the item to equip.
+                equipmentItem.prefab.SetActive(true);
+                content[i].itemData.isEquipped = true;
+                Inventory.instance.RefreshContent();
+            }
+        }
+    }
+
+    // Getter
+    public ItemData GetEquippedWeapon()
+    {
+        return equippedWeapon;
     }
 }

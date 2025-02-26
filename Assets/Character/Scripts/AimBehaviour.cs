@@ -6,38 +6,33 @@ public class AimBehaviour : GenericBehaviour
 {
 	public Texture2D crosshair;                            // Crosshair texture.
 	private bool aim;                                      // Boolean to determine whether or not the player is aiming.
-    private AnimationManager animationManager;             // Management of the different animations.
+	private AnimationManager animationManager;             // Management of the different animations.
+	[SerializeField]
+	private PlayerStat playerStat;
 
-    // Start is always called after any Awake functions.
-    void Start ()
+	// Start is always called after any Awake functions.
+	void Start()
 	{
 		// Set up the references.
 		animationManager = new AnimationManager(behaviourManager.GetAnim);
 	}
 
 	// Update is used to set features regardless the active behaviour.
-	void Update ()
+	void Update()
 	{
 		// Activate/deactivate aim by input.
-		if (InputManager.IsAiming() && !aim)
-		{
+		if (InputManager.IsAiming() && !aim && !playerStat.IsDead())
 			StartCoroutine(ToggleAimOn());
-		}
-		else if (aim && !InputManager.IsAiming())
-		{
+		else if ((aim && !InputManager.IsAiming()) || playerStat.IsDead()) 
 			StartCoroutine(ToggleAimOff());
-		}
-
 		// No sprinting while aiming.
 		canSprint = !aim;
-
 		// Toggle camera aim position left or right, switching shoulders.
 		if (aim && InputManager.SwitchShoulder())
 		{
 			GlobalSettings.aimCamOffset.x *= -1;
 			GlobalSettings.aimPivotOffset.x *= -1;
 		}
-
 		// Set aim boolean on the Animator Controller.
 		animationManager.SetAim(aim);
 	}
@@ -46,22 +41,22 @@ public class AimBehaviour : GenericBehaviour
 	private IEnumerator ToggleAimOn()
 	{
 		yield return new WaitForSeconds(0.05f);
-        // Aiming is not possible.
-        if (behaviourManager.GetTempLockStatus(behaviourCode) || behaviourManager.IsOverriding(this))
-            yield return false;
-        // Start aiming.
-        else
-        {
-            aim = true;
-            int signal = 1;
-            GlobalSettings.aimCamOffset.x = Mathf.Abs(GlobalSettings.aimCamOffset.x) * signal;
-            GlobalSettings.aimPivotOffset.x = Mathf.Abs(GlobalSettings.aimPivotOffset.x) * signal;
-            yield return new WaitForSeconds(0.1f);
-            animationManager.SetSpeed(0);
-            // This state overrides the active one.
-            behaviourManager.OverrideWithBehaviour(this);
-        }
-    }
+		// Aiming is not possible.
+		if (behaviourManager.GetTempLockStatus(behaviourCode) || behaviourManager.IsOverriding(this))
+			yield return false;
+		// Start aiming.
+		else
+		{
+			aim = true;
+			int signal = 1;
+			GlobalSettings.aimCamOffset.x = Mathf.Abs(GlobalSettings.aimCamOffset.x) * signal;
+			GlobalSettings.aimPivotOffset.x = Mathf.Abs(GlobalSettings.aimPivotOffset.x) * signal;
+			yield return new WaitForSeconds(0.1f);
+			animationManager.SetSpeed(0);
+			// This state overrides the active one.
+			behaviourManager.OverrideWithBehaviour(this);
+		}
+	}
 
 	// Co-rountine to end aiming mode with delay.
 	private IEnumerator ToggleAimOff()
@@ -78,8 +73,8 @@ public class AimBehaviour : GenericBehaviour
 	public override void LocalFixedUpdate()
 	{
 		// Set camera position and orientation to the aim mode parameters.
-		if(aim)
-			behaviourManager.GetCamScript.SetTargetOffsets (GlobalSettings.aimPivotOffset, GlobalSettings.aimCamOffset);
+		if (aim)
+			behaviourManager.GetCamScript.SetTargetOffsets(GlobalSettings.aimPivotOffset, GlobalSettings.aimCamOffset);
 	}
 
 	// LocalLateUpdate: manager is called here to set player rotation after camera rotates, avoiding flickering.
@@ -104,7 +99,7 @@ public class AimBehaviour : GenericBehaviour
 		forward = forward.normalized;
 
 		// Always rotates the player according to the camera horizontal rotation in aim mode.
-		Quaternion targetRotation =  Quaternion.Euler(0, behaviourManager.GetCamScript.GetH, 0);
+		Quaternion targetRotation = Quaternion.Euler(0, behaviourManager.GetCamScript.GetH, 0);
 
 		float minSpeed = Quaternion.Angle(transform.rotation, targetRotation) * GlobalSettings.aimTurnSmoothing;
 
@@ -114,16 +109,14 @@ public class AimBehaviour : GenericBehaviour
 
 	}
 
- 	// Draw the crosshair when aiming.
-	void OnGUI () 
+	// Draw the crosshair when aiming.
+	void OnGUI()
 	{
 		if (crosshair)
 		{
 			float mag = behaviourManager.GetCamScript.GetCurrentPivotMagnitude(GlobalSettings.aimPivotOffset);
 			if (mag < 0.05f)
-				GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f),
-										 Screen.height / 2 - (crosshair.height * 0.5f),
-										 crosshair.width, crosshair.height), crosshair);
+				GUI.DrawTexture(new Rect(Screen.width / 2 - (crosshair.width * 0.5f), Screen.height / 2 - (crosshair.height * 0.5f), crosshair.width, crosshair.height), crosshair);
 		}
 	}
 }

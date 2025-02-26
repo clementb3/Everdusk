@@ -6,6 +6,7 @@ public class PlayerStat : MonoBehaviour
     [Header("HEALTH")]
     [SerializeField]
     private float maxHealth = 100f;              // References the maximum health points of the player.
+    [SerializeField]
     private float currentHealth;                 // References the current health points of the player.
     [SerializeField]
     private Image healthImage;                   // References the health image in the canvas.
@@ -25,9 +26,7 @@ public class PlayerStat : MonoBehaviour
     [SerializeField]
     private Animator animator;                   // Management of the different animations.
     [SerializeField]
-    private AimBehaviour aimBehaviour;           // Management of the aim script.
-    [SerializeField]
-    private Attack attack;           // Management of the aim script.
+    private Attack attack;                       // Management of the attack script.
     private bool isDead = false;
 
     void Awake()
@@ -59,14 +58,12 @@ public class PlayerStat : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Player died");
         isDead = true;
         // Disable the players' movement, aiming and attack script.
         moveBehaviour.CanMove();
-        aimBehaviour.enabled = false;
         attack.enabled = false;
         // Play the death animation.
-        animator.SetTrigger("Dead");;
+        animator.SetTrigger("Dead");
     }
 
     // Update the visuals of health and mana bars.
@@ -95,7 +92,7 @@ public class PlayerStat : MonoBehaviour
     }
 
     // Getter.
-    public bool GetIsDead()
+    public bool IsDead()
     {
         return isDead;
     }

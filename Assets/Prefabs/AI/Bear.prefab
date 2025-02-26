@@ -1280,9 +1280,10 @@ GameObject:
   - component: {fileID: 3982478306041576858}
   - component: {fileID: 5556717957144079896}
   - component: {fileID: 259851028144972454}
+  - component: {fileID: 923533932980958010}
   m_Layer: 0
   m_Name: Bear
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1295,7 +1296,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3999184365688117568}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.97865236, z: -0, w: -0.20552275}
+  m_LocalRotation: {x: -0, y: -0.9786528, z: 0, w: -0.2055208}
   m_LocalPosition: {x: -2.38, y: 0.21, z: 13.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1338,14 +1339,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dc35805d6d4b924f88a465fa0f8389b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  playerStat: {fileID: 0}
   agent: {fileID: 3982478306041576858}
   animator: {fileID: 259851028144972454}
   walkSpeed: 2
   runSpeed: 4
-  attackDamage: 15
+  attackDamage: 10
   rotationSpeed: 2
+  maxHealth: 100
   waitTimeMin: 2
   waitTimeMax: 5
   attackDelay: 1.133
@@ -1375,6 +1375,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!135 &923533932980958010
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3999184365688117568}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.2647439
+  m_Center: {x: 0.0000000034377834, y: 0.4875021, z: 0.12698722}
 --- !u!1 &4040643629032386401
 GameObject:
   m_ObjectHideFlags: 0
