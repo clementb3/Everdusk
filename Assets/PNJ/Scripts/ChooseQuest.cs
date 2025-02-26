@@ -124,7 +124,7 @@ public class ChooseQuest : MonoBehaviour
         StartCoroutine(ShowQuestOptions());
     }
 
-    IEnumerator ShowQuestOptions()
+    IEnumerator ShowQuestOptions() 
     {
         yield return new WaitForSeconds(2.0f);
 

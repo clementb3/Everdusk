@@ -304,12 +304,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f7b6f240392447a0f4c86fa725ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 220901693}
-  minX: 300
-  maxX: 600
-  minZ: 300
-  maxZ: 600
-  stopDistance: 1
 --- !u!195 &220901693
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -535,7 +529,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &329898692
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1145,24 +1139,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
   m_PrefabInstance: {fileID: 1067896198}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &618923514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 618923513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a50f7b6f240392447a0f4c86fa725ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agent: {fileID: 618923515}
-  minX: 300
-  maxX: 600
-  minZ: 300
-  maxZ: 600
-  stopDistance: 1
 --- !u!195 &618923515
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1235,6 +1211,60 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!95 &618923518 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
+  m_PrefabInstance: {fileID: 1067896198}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &618923520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618923513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fa69340f1c6fb843b0fc70b8b6024a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 618923515}
+  player: {fileID: 1176679975}
+  minX: 300
+  maxX: 600
+  minZ: 300
+  maxZ: 600
+  stopDistance: 1
+  detectionDistance: 30
+  rotationSpeed: 5
+  animator: {fileID: 618923518}
+--- !u!114 &618923522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618923513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd0933c869f81f749b580243593d953c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionDistance: 30
+  ActionDisplay: {fileID: 893194635}
+  ActionText: {fileID: 803906223}
+  player: {fileID: 1176679974}
+  NPCBox: {fileID: 2013575878}
+  PlayerBox: {fileID: 439429514}
+  NPCName: {fileID: 290251351}
+  NPCText: {fileID: 1351699296}
+  PlayerName: {fileID: 1197328803}
+  PlayerText: {fileID: 1037630317}
+  ChoicesPanel: {fileID: 439429514}
+  Quest1Button: {fileID: 1650753292}
+  Quest2Button: {fileID: 1412985653}
+  Quest3Button: {fileID: 1861202839}
+  animator: {fileID: 618923518}
 --- !u!1 &714474472
 GameObject:
   m_ObjectHideFlags: 0
@@ -2185,7 +2215,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 2718118d5bd37284f8764fb00d0ee41d, type: 2}
+      objectReference: {fileID: 9100000, guid: 30b53f8c5993c2d47a875a4cf68ccf32, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2201,7 +2231,10 @@ PrefabInstance:
       addedObject: {fileID: 618923515}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 618923514}
+      addedObject: {fileID: 618923522}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 618923520}
   m_SourcePrefab: {fileID: 100100000, guid: ff9939f75592f3c43b49eb3e56469c2c, type: 3}
 --- !u!1 &1078388176 stripped
 GameObject:
@@ -3878,12 +3911,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f7b6f240392447a0f4c86fa725ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 1833977706}
-  minX: 300
-  maxX: 600
-  minZ: 300
-  maxZ: 600
-  stopDistance: 1
 --- !u!195 &1833977706
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4640,12 +4667,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f7b6f240392447a0f4c86fa725ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 2083368940}
-  minX: 300
-  maxX: 600
-  minZ: 300
-  maxZ: 600
-  stopDistance: 1
 --- !u!195 &2083368940
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4807,12 +4828,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50f7b6f240392447a0f4c86fa725ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 2114119426}
-  minX: 300
-  maxX: 600
-  minZ: 300
-  maxZ: 600
-  stopDistance: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

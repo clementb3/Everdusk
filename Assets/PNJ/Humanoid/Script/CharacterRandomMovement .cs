@@ -29,7 +29,7 @@ public class CharacterRandomMovement : MonoBehaviour
         {
             // Arrêter le PNJ et regarder le joueur
             isNearPlayer = true;
-            agent.isStopped = true;
+            agent.isStopped = true; 
             animator.SetBool("isWalking", false); // Stopper l'animation de marche
             LookAtPlayer();
         }
