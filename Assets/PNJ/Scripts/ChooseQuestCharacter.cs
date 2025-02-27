@@ -3,9 +3,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class ChooseQuest : MonoBehaviour
+public class ChooseQuestCharacter : MonoBehaviour
 {
-    public float interactionDistance = 30f;
+    public float interactionDistance = 10f;
     public GameObject ActionDisplay;
     public GameObject ActionText;
     public GameObject player;
@@ -61,7 +61,7 @@ public class ChooseQuest : MonoBehaviour
         // Fin de la conversation si le joueur s'éloigne
         else if (distance > interactionDistance && hasTalked)
         {
-            EndConversation();
+            StartCoroutine(EndConversation());
         }
 
         // Le joueur appuie sur "E" pour répondre
@@ -100,10 +100,10 @@ public class ChooseQuest : MonoBehaviour
     {
         Debug.Log("Displaying NPC text: " + text);
         NPCText.GetComponent<TMP_Text>().text = text; // Affichage du texte
-        yield return new WaitForSeconds(2.0f); // Attendre un peu avant de montrer la réponse du joueur
+        yield return new WaitForSeconds(1.0f); // Attendre un peu avant de montrer la réponse du joueur
 
         // Afficher "Press E to respond"
-        ActionText.GetComponent<TMP_Text>().text = "Press E to respond";
+        ActionText.GetComponent<TMP_Text>().text = "E";
         ActionDisplay.SetActive(true);
         ActionText.SetActive(true);
         waitingForPlayerResponse = true; // Active l'attente de réponse
@@ -124,7 +124,7 @@ public class ChooseQuest : MonoBehaviour
         StartCoroutine(ShowQuestOptions());
     }
 
-    IEnumerator ShowQuestOptions() 
+    IEnumerator ShowQuestOptions()
     {
         yield return new WaitForSeconds(2.0f);
 
@@ -139,7 +139,7 @@ public class ChooseQuest : MonoBehaviour
     void SelectQuest(string questName)
     {
         ChoicesPanel.SetActive(false);
-        NPCText.GetComponent<TMP_Text>().text = "Good luck with your quest: " + questName + "!";
+        NPCText.GetComponent<TMP_Text>().text = "Good luck with your quest: \n  " + questName + "!";
 
         StartCoroutine(CloseDialogue());
     }
@@ -147,19 +147,26 @@ public class ChooseQuest : MonoBehaviour
     IEnumerator CloseDialogue()
     {
         yield return new WaitForSeconds(3.0f);
-        EndConversation();
+        StartCoroutine(EndConversation());
     }
-
-    void EndConversation()
+    
+    //void EndConversation()
+    IEnumerator EndConversation()
     {
         Debug.Log("Ending conversation...");
         NPCBox.SetActive(false);
         isTalking = false;
-        animator.SetBool("isTalking", false);
+        animator.SetBool("isTalking", false); 
 
         // Réinitialiser l'état de la conversation
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        animator.SetBool("isWalking", true);
+
+        yield return new WaitForSeconds(3.0f);
+
         hasTalked = false; // Permet au PNJ de parler à nouveau quand le joueur revient
     }
+
 }

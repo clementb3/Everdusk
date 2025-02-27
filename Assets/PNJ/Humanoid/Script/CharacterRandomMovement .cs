@@ -14,7 +14,7 @@ public class CharacterRandomMovement : MonoBehaviour
     public float rotationSpeed = 5f;
     public Animator animator;
 
-    private bool isNearPlayer = false;
+    public bool isNearPlayer = false;
 
     void Start()
     {
@@ -22,33 +22,44 @@ public class CharacterRandomMovement : MonoBehaviour
     }
 
     void Update()
+{
+    float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+    if (distanceToPlayer <= detectionDistance)
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if (distanceToPlayer <= detectionDistance)
+        isNearPlayer = true;
+        agent.isStopped = true;
+        animator.SetBool("isWalking", false);
+        LookAtPlayer();
+    }
+    else
+    {
+        if (isNearPlayer)
         {
-            // Arrêter le PNJ et regarder le joueur
-            isNearPlayer = true;
-            agent.isStopped = true; 
-            animator.SetBool("isWalking", false); // Stopper l'animation de marche
-            LookAtPlayer();
+            isNearPlayer = false;
+            agent.isStopped = false;
+            animator.SetBool("isWalking", true); // ✅ S'assurer que l'animation reprend immédiatement
+            MoveToRandomPosition();
         }
-        else
-        {
-            if (isNearPlayer)
-            {
-                isNearPlayer = false;
-                agent.isStopped = false;
-                animator.SetBool("isWalking", true); // Reprendre la marche
-                MoveToRandomPosition();
-            }
 
-            if (!agent.pathPending && agent.remainingDistance <= stopDistance)
-            {
-                MoveToRandomPosition();
-            }
+        if (!agent.pathPending && agent.remainingDistance <= stopDistance)
+        {
+            animator.SetBool("isWalking", false);
+            MoveToRandomPosition();
         }
     }
+
+    // ✅ Nouvelle vérification : s'assurer que l'animation suit bien le déplacement
+    if (agent.velocity.magnitude > 0.1f) // Vérifie si l'agent bouge
+    {
+        animator.SetBool("isWalking", true);
+    }
+    else
+    {
+        animator.SetBool("isWalking", false);
+    }
+}
+
 
     void MoveToRandomPosition()
     {
@@ -58,14 +69,14 @@ public class CharacterRandomMovement : MonoBehaviour
         if (NavMesh.SamplePosition(randomDestination, out hit, 5.0f, NavMesh.AllAreas))
         {
             agent.SetDestination(hit.position);
-            animator.SetBool("isWalking", true); // Lancer l'animation de marche
+            animator.SetBool("isWalking", true); // ✅ Lancer l'animation de marche
         }
     }
 
     void LookAtPlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0; 
+        direction.y = 0;
 
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);

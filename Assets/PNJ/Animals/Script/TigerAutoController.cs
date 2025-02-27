@@ -71,7 +71,7 @@ public class TigerAutoController : MonoBehaviour
         return 1f; 
     }
 
-    // 🛑 Fonction de décélération progressive
+    // Fonction de décélération progressive
     IEnumerator Decelerate()
     {
         float startSpeed = rb.linearVelocity.magnitude;
