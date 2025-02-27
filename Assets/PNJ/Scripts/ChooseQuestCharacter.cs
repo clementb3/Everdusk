@@ -129,7 +129,7 @@ public class ChooseQuestCharacter : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
 
         PlayerBox.SetActive(false);
-        NPCBox.SetActive(true);
+        NPCBox.SetActive(true); 
         NPCName.GetComponent<TMP_Text>().text = "NPC";
         NPCText.GetComponent<TMP_Text>().text = "Yes! Here are some quests:";
 
