@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Item
   - Enemy
+  - Chest
+  - OtherInventory
+  - PlayerInventory
+  - Merchant
   layers:
   - Default
   - TransparentFX
