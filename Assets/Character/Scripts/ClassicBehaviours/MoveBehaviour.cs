@@ -42,6 +42,9 @@ public class MoveBehaviour : GenericBehaviour
 	// Execute the idle and walk/run jump movements.
 	void Jump()
 	{
+		if (!canMove)
+			return;
+
 		float initialSpeed = animationManager.GetSpeed();
 		// Start a new jump.
 		if (jump && !animationManager.IsJumping() && behaviourManager.IsGrounded())

@@ -25,6 +25,8 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private ItemActionSystem itemActionSystem;    // Reference to the itemActionSystem class.
 
+    private bool canOpen = true;
+
     void Awake()
     {
         instance = this;
@@ -32,13 +34,16 @@ public class Inventory : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (canOpen)
         {
-            if (isInventoryOpen)
-                CloseInventory();
-            else
+            if (Input.GetKeyDown(KeyCode.I))
             {
-                OpenInventory();
+                if (isInventoryOpen)
+                    CloseInventory();
+                else
+                {
+                    OpenInventory();
+                }
             }
         }
     }
@@ -128,6 +133,12 @@ public class Inventory : MonoBehaviour
     public Equipment GetEquipment()
     {
         return equipment;
+    }
+
+    // Setter
+    public void CanOpen()
+    {
+        canOpen = !canOpen;
     }
 }
 

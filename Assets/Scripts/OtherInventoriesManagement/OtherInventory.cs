@@ -50,7 +50,9 @@ public class OtherInventory : MonoBehaviour
     {
         displayedInventory.SetActive(false);
         otherItemActionSystem.CloseItemAction();
-        currentInventory = null;
+        print(otherItemActionSystem);
+        if (!OtherItemActionSystem.currentItemAction && !ItemActionSystem.instance.isInspecting)
+            currentInventory = null;
         RemoveItems();
     }
 

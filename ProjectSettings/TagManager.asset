@@ -10,6 +10,7 @@ TagManager:
   - OtherInventory
   - PlayerInventory
   - Merchant
+  - InspectionCamera
   layers:
   - Default
   - TransparentFX
