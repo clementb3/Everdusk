@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         panelOpened = UIPanels.Any((panel) => panel == panel.activeSelf);
-        if(panelOpened)
+        if (panelOpened)
         {
             // Disable camera movement.
             GlobalSettings.horizontalAimingSpeed = 0f;
