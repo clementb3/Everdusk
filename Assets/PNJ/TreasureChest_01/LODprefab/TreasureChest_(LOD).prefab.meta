@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bac81d98f55582148a49f7a4b6c6466d
+timeCreated: 1482374830
+licenseType: Store
+NativeFormatImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 78920
+  packageName: Free Simple Treasure Chest
+  packageVersion: 1.0
+  assetPath: Assets/TreasureChest_01/LODprefab/TreasureChest_(LOD).prefab
+  uploadId: 152672
