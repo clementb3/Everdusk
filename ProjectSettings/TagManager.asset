@@ -11,6 +11,9 @@ TagManager:
   - PlayerInventory
   - Merchant
   - InspectionCamera
+  - Character
+  - Museum
+  - Quest1Button
   layers:
   - Default
   - TransparentFX
@@ -19,7 +22,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - NavMeshBake
   - 
   - 
   - 
