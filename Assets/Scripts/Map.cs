@@ -18,8 +18,8 @@ public class Map : MonoBehaviour
     }
     void Update()
     {
-        double y = player.transform.position.z / 2500 *4 -2;
-        double x = player.transform.position.x / 2500 * 5.5 - 2.25;
+        double y = player.transform.position.z / 2700 *4 -2;
+        double x = player.transform.position.x / 2700 * 5.5 - 4;
         displayedPlayer.transform.localRotation = Quaternion.Euler(0, 0, player.eulerAngles.y * -1);
         displayedPlayer.transform.localPosition = new Vector3((float)(x), (float)(y), -1);
         if (Input.GetKeyDown(KeyCode.M))

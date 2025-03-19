@@ -17,4 +17,6 @@ MonoBehaviour:
   prefab: {fileID: 355312524381552382, guid: b84d7ca3927758646a65731cc107aa76, type: 3}
   itemType: 2
   equipmentType: 5
-  isEquipped: 0
+  isEquipped: 1
+  armorPoints: 0
+  weaponDamage: 10

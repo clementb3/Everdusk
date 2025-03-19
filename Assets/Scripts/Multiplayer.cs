@@ -63,6 +63,7 @@ public class Multiplayer : MonoBehaviour
     void Update()
     {
         playerModel.transform.localPosition = vector;
+     
         if (ws == null && id != null)
         {
             return;
@@ -71,6 +72,6 @@ public class Multiplayer : MonoBehaviour
         double y = player.transform.localPosition.y;
         double x = player.transform.localPosition.x;
         //Debug.Log($"id : {id}, x : {x}, y : {y}, z : {z}");
-        ws.Send($"id : {id}; x : {x}; y : {y}; z : {z}");
+        ws.Send($"id : {id}; x : {x}; y : {y}; z : {z}"); 
     }
 }

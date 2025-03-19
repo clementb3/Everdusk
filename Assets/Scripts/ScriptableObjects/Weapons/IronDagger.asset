@@ -18,3 +18,5 @@ MonoBehaviour:
   itemType: 2
   equipmentType: 5
   isEquipped: 0
+  armorPoints: 0
+  weaponDamage: 8
