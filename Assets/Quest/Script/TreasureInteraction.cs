@@ -1,5 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro; // Assure-toi d’avoir ce "using"
+
 
 public class TreasureInteraction : MonoBehaviour
 {
@@ -14,6 +18,8 @@ public class TreasureInteraction : MonoBehaviour
     private bool isNearTreasure = false;
     private bool hasDiamond = false;
     private bool isNearMuseum = false;
+
+    public TMP_Text questStatusLabel; // Assigne-le dans l’Inspector
 
     void Start()
     { 
@@ -108,6 +114,7 @@ public class TreasureInteraction : MonoBehaviour
         diamondUI.gameObject.SetActive(true); // Activer l'image UI
     }
 
+    /*
     void DropDiamond()
     {
         hasDiamond = false;
@@ -117,6 +124,26 @@ public class TreasureInteraction : MonoBehaviour
         diamond.SetActive(true);
 
         diamondUI.gameObject.SetActive(false); // Désactiver l'image UI
+    }*/
+
+    void DropDiamond()
+    {
+        hasDiamond = false;
+
+        diamond.transform.position = museumDropPoint.position;
+        diamond.SetActive(true);
+        diamondUI.gameObject.SetActive(false);
+
+        questStatusLabel.text = "Quest completed!";
+        questStatusLabel.gameObject.SetActive(true);
+
+        StartCoroutine(HideQuestStatusLabelAfterDelay(3f));
+    }
+
+    IEnumerator HideQuestStatusLabelAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        questStatusLabel.gameObject.SetActive(false);
     }
 
 }
