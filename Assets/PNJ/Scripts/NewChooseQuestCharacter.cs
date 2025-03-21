@@ -67,8 +67,8 @@ public class NewChooseQuestCharacter : MonoBehaviour
         NPCBox.SetActive(false);
         PlayerBox.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
     }
 
     void Update()

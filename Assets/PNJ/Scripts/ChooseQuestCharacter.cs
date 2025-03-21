@@ -33,8 +33,8 @@ public class ChooseQuestCharacter : MonoBehaviour
         NPCBox.SetActive(false);
         PlayerBox.SetActive(false);
 
-        Cursor.lockState = CursorLockMode.Locked; // Verrouille le curseur au centre de l'écran
-        Cursor.visible = false; // Cache le curseur
+        // Cursor.lockState = CursorLockMode.Locked; // Verrouille le curseur au centre de l'écran
+        // Cursor.visible = false; // Cache le curseur
 
         if (Quest1Button != null && Quest2Button != null && Quest3Button != null)
         {
@@ -149,7 +149,7 @@ public class ChooseQuestCharacter : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
 
         PlayerBox.SetActive(false);
-        NPCBox.SetActive(true); 
+        NPCBox.SetActive(true);
         NPCName.GetComponent<TMP_Text>().text = "NPC";
         NPCText.GetComponent<TMP_Text>().text = "Yes! Here are some quests:";
 
@@ -169,14 +169,14 @@ public class ChooseQuestCharacter : MonoBehaviour
         yield return new WaitForSeconds(3.0f);
         StartCoroutine(EndConversation());
     }
-    
+
     //void EndConversation()
     IEnumerator EndConversation()
     {
         Debug.Log("Ending conversation...");
         NPCBox.SetActive(false);
         isTalking = false;
-        animator.SetBool("isTalking", false); 
+        animator.SetBool("isTalking", false);
 
         // Réinitialiser l'état de la conversation
         Cursor.lockState = CursorLockMode.None;

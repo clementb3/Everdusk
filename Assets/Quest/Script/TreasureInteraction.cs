@@ -31,7 +31,7 @@ public class TreasureInteraction : MonoBehaviour
     {
         /*
         #if UNITY_EDITOR
-        Debug.Log($"isNearTreasure: {isNearTreasure}, hasDiamond: {hasDiamond}, isNearMuseum: {isNearMuseum}");
+        // Debug.Log($"isNearTreasure: {isNearTreasure}, hasDiamond: {hasDiamond}, isNearMuseum: {isNearMuseum}");
         #endif
         */
 

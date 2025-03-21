@@ -63,6 +63,7 @@ public class Multiplayer : MonoBehaviour
     void Update()
     {
         playerModel.transform.localPosition = vector;
+     
         if (ws == null && id != null)
         {
             return;
