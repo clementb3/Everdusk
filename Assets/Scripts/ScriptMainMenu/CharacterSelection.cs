@@ -8,7 +8,8 @@ public class CharacterSelection : MonoBehaviour
     public GameObject characterPrefab;  
     public Transform previewSpawnPoint;       
     public TMP_Text characterNameText; 
-
+    public static string selectedCharacter = null; 
+    public Button confirmButton;
     private GameObject currentPreviewInstance; 
 
     public void SpawnCharacter()
@@ -31,4 +32,26 @@ public class CharacterSelection : MonoBehaviour
         Debug.Log("Retour à l'écran d'accueil");
         SceneManager.LoadScene("SceneMainMenu");
     }
+    
+
+    void Start()
+    {
+        confirmButton.interactable = false; // Désactive le bouton au départ
+    }
+
+    public void SelectCharacter(string characterName)
+    {
+        selectedCharacter = characterName;
+        confirmButton.interactable = true; // Active le bouton quand un personnage est choisi
+    }
+
+    public void ConfirmSelection()
+    {
+        if (!string.IsNullOrEmpty(selectedCharacter))
+        {
+            PlayerPrefs.SetString("SelectedCharacter", selectedCharacter); // Sauvegarde le choix
+            SceneManager.LoadScene("main"); // Charge la scène du jeu
+        }
+    }
+
 }

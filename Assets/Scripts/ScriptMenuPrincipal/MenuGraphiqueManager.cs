@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class MenuGraphiqueManager : MonoBehaviour
 {
+
     public GameObject panelMenuPrincipal; // Référence au panel principal
     public GameObject panelGraphique;     // Référence au panel graphique
 
@@ -150,4 +151,6 @@ public class MenuGraphiqueManager : MonoBehaviour
         
         panelGraphique.SetActive(false);
     }
+
+    
 }

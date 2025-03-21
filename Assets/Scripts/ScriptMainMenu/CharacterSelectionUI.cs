@@ -23,11 +23,10 @@ public class CharacterSelectionUI : MonoBehaviour
 
     void Start()
     {
-        confirmButton.interactable = false;
         GenerateCharacterButtons();
     }
 
-    void GenerateCharacterButtons()
+    public void GenerateCharacterButtons()
     {
         foreach (var character in availableCharacters)
         {
@@ -40,7 +39,7 @@ public class CharacterSelectionUI : MonoBehaviour
         }
     }
 
-    void SelectCharacter(CharacterData character)
+    public void SelectCharacter(CharacterData character)
     {
         previewImage.sprite = character.appearance;
         previewText.text = $"{character.name}\nClass: {character.characterClass}";
