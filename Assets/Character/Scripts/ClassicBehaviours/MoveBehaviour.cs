@@ -17,7 +17,7 @@ public class MoveBehaviour : GenericBehaviour
 		// Subscribe and register this behaviour as the default behaviour.
 		behaviourManager.SubscribeBehaviour(this);
 		behaviourManager.RegisterDefaultBehaviour(behaviourCode);
-		speedSeeker = GlobalSettings.runSpeed;
+		speedSeeker = GlobalSettings.runSpeed*300;
 	}
 
 	// Update is used to set features regardless the active behaviour.

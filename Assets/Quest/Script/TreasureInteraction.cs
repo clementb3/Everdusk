@@ -23,11 +23,11 @@ public class TreasureInteraction : MonoBehaviour
 
     void Update()
     {
-        
+        /*
         #if UNITY_EDITOR
         Debug.Log($"isNearTreasure: {isNearTreasure}, hasDiamond: {hasDiamond}, isNearMuseum: {isNearMuseum}");
         #endif
-        
+        */
 
         // Si le joueur est proche du coffre et appuie sur "E", il récupère le diamant
         if (isNearTreasure && Input.GetKeyDown(KeyCode.E) && !hasDiamond)
